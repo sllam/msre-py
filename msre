@@ -1,0 +1,11 @@
+
+source msre.conf
+
+args=("$@")
+
+if [ $# -eq 1 ]
+then
+	python /usr/bin/msr.py ${args[0]}
+else
+	echo "Usage: msre <File name>"
+fi
