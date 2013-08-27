@@ -1,0 +1,63 @@
+
+MSR Ensemble for Python (MSRE-Py) Version 0.9, Prototype Alpha
+
+Authors:
+Edmund S. L. Lam      sllam@qatar.cmu.edu
+Iliano Cervesato      iliano@cmu.edu
+
+* Development of MSRE-Py is funded by the Qatar National Research Fund as project NPRP 09-667-1-100 (Effective Programming for Large Distributed Ensembles)
+
+
+############
+Introduction
+############
+
+This is the prototype version of MSR Ensemble (MSRE) for Python, a rule-based, declarative distributed programming language, based on multiset rewriting.
+MSRE is implemented on top of MPI libraries in Python and performs constraint rewriting in a decentralized manner.
+
+For more information on MSRE, see our PPDP'13 paper "Decentralized Execution of Constraint Handling Rules for Ensembles", which can be found 
+at http://www.qatar.cmu.edu/~sllam/my_papers/published/SLLAM_ppdp13.pdf .
+
+
+############
+Requirements
+############
+
+System Applications:
+   - Python 2.7
+   - MPI Distribution, preferably MPI-2
+
+Non-standard Python packages:
+   - mpi4py (MPI binding libraries for Python http://mpi4py.scipy.org/)
+   - ply (Python Lex-Yacc http://www.dabeaz.com/ply/)
+
+* Currently only tested on Ubuntu, but do try on other platforms and feel free to report any bugs or issues to us!
+
+
+############
+Instructions
+############
+
+In command prompt, run 'make install', this will install MSRE into your default python installation as the python module 'msr_ensemble'.
+
+To compile a MSRE program, invoke the MSRE compiler by running 'msre <.msr file name>', this will create a number of .py files.
+
+To run the MSRE compilation over MPI environment, run 'mpiexec -n <num of ranks> python <.py MSRE compilation>'.
+
+
+#####
+TODOs
+#####
+
+MSRE-Py is still work in progress and might not be as yet, your perfect distributed programming experience. As such, we wish you
+will be patient with the awkward and odd little wrong things that MSRE might do. Please do report any bugs or issues that you encounter.
+We welcome any comments on how to improve the MSRE programming experience.
+
+Here is a list of things which we are currently working on, to improve MSRE:
+
+     - Better lexing error reports
+     - Completing the type-checking facilities
+     - Modularity
+     - Additional language features
+     - Drop the source-to-source compilation and build a VM already! =P
+
