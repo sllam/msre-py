@@ -1,0 +1,60 @@
+
+ensem hyperquicksorter {
+
+	extern msr_ensemble.python.lib {
+		sort   :: [A] -> [A],
+		take   :: ([A],int) -> [A],
+		drop   :: ([A], int) -> [A],
+		first  :: [A] -> A,
+		median :: [A] -> A,
+		merge  :: ([A],[A]) -> [A],
+		partition :: ([A],int) -> ([A],[A])
+	}
+
+	predicate sorted   :: ([A],dest) -> fact.
+	predicate unsorted :: ([A],dest) -> fact.
+	predicate leader   :: dest -> fact.
+	predicate partnerLink :: (loc,dest) -> fact.
+	predicate leaderLinks :: ([loc],dest) -> fact.
+	predicate median  :: (A,dest) -> fact.
+	predicate leqM :: ([A],dest) -> fact.
+	predicate grM  :: ([A],dest) -> fact.
+	predicate promote :: (dest,dest) -> fact.
+
+	rule sort :: [X]unsorted(L1,R) --o [X]sorted(L2,R) where L2 = sort(L1).
+
+	rule leader_reduce :: [X]leader(R), [X]leaderLinks(G,R) | (len(G)) <= 1 --o 1.
+
+	rule leader_expand :: [X]sorted(L,R) \ [X]leader(R), [X]leaderLinks(G,R)
+                              --o exists Rl,Rg. 
+                                  [X]leader(Rl), [X]leaderLinks(Gl,Rl),
+                                  [Z]leader(Rg), [Z]leaderLinks(Gg,Rg),
+                                  { [Y]median(M,R) | Y in G },
+                                  { [Y]partnerLink(W,R),[Y]promote(Rl,R) | (Y,W) in zip(Gl,Gg) },
+                                  { [Y]promote(Rg,R) | Y in Gg }
+                                  where Gl = take(G,(len(G))/2),
+                                        Gg = drop(G,(len(G))/2),
+                                        Z  = first(Gg),
+                                        M  = median(L).
+
+	rule partition :: [X]median(M,R), [X]sorted(L,R) --o [X]leqM(Ls,R), [X]grM(Gs,R)
+                                                             where (Ls,Gs) = partition(L,M).
+
+	rule swap :: [X]partnerLink(Y,R), [X]grM(L1,R), [Y]leqM(L2,R) --o [X]leqM(L2,R), [Y]grM(L1,R).
+
+	rule leq_merge :: [X]promote(Rl,R), [X]leqM(Ls1,R), [X]leqM(Ls2,R) --o [X]sorted(Ls,Rl) where Ls = merge(Ls1,Ls2).
+
+	rule gr_merge :: [X]promote(Rg,R), [X]grM(Gs1,R), [X]grM(Gs2,R) --o [X]sorted(Gs,Rg) where Gs = merge(Gs1,Gs2).
+
+}
+
+execute hyperquicksorter with l0,l1,l2,l3 {
+
+	R = "x".
+
+	init l0 :: unsorted([1,54,32,12],R), leader(R), leaderLinks([l0,l1,l2,l3],R).
+	init l1 :: unsorted([4,48,212,7,5],R).
+	init l2 :: unsorted([6,78,34,432],R).
+	init l3 :: unsorted([75,9,2,801,43],R).
+
+}

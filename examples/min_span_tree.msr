@@ -1,0 +1,41 @@
+
+ensem minspantree_ensemble {
+
+	extern msr_ensemble.python.lib {
+		retrieve_mwoe :: [(loc,loc,int)] -> (loc,loc,int),
+		combine_out_edges :: ([(loc,loc,int)],[(loc,loc,int)]) -> [(loc,loc,int)]
+	}
+
+	predicate outEdges :: [(loc,loc,int)] -> fact.
+	predicate level    :: int -> fact.
+	predicate findMWOE :: fact.
+	predicate combine  :: (loc,int,loc,loc,int) -> fact.
+	predicate decided  :: (loc,loc,int) -> fact.
+	predicate forward  :: loc -> fact.
+	predicate absorb   :: (loc,loc,loc,int) -> fact.
+	predicate mstEdge  :: (loc,int) -> fact.
+
+	rule find_mwoe :: [X]outEdges(Xs),[X]level(L) \ [X]findMWOE() | (len(Xs)) > 0 --o [X]decided(I,O,W),[O]combine(X,L,I,O,W) where (I,O,W) = retrieve_mwoe(Xs).
+	
+	rule forward_1 :: [O]forward(Y) \ [O]combine(X,L,I,O2,W) | X != Y --o [Y]combine(X,L,I,O2,W).
+
+	rule combine_1 :: [O]level(L2) \ [O]combine(X,L1,I,O2,W) | X != O,L2 > L1 --o [O]absorb(X,I,O2,W).
+	rule combine_2 :: [X]decided(I,O,W), [X]combine(Y,L,O,I,W), [X]level(L) | X > Y --o [X]level(L+1), [X]absorb(Y,I,O,W). 
+
+	rule r_absorb :: [X]absorb(Y,I,O,W), [X]outEdges(E1), [Y]outEdges(E2) --o
+                               [X]outEdges(E3), [I]mstEdge(O,W), [O]mstEdge(I,W), [X]findMWOE(), [Y]forward(X) where E3 = combine_out_edges(E1,E2).
+
+}
+
+execute minspantree_ensemble with l0,l1,l2,l3,l4,l5,l6 {
+
+	init l0 :: outEdges([[l0,l1,10],[l0,l3,1],[l0,l4,4]]), level(0), findMWOE().
+	init l1 :: outEdges([[l1,l0,10],[l1,l2,4]]), level(0), findMWOE().
+	init l2 :: outEdges([[l2,l1,4],[l2,l3,60]]), level(0), findMWOE().
+	init l3 :: outEdges([[l3,l2,60],[l3,l0,1]]), level(0), findMWOE().
+	init l4 :: outEdges([[l4,l0,4],[l4,l5,47],[l4,l6,12]]), level(0), findMWOE().
+	init l5 :: outEdges([[l5,l4,47],[l5,l6,1]]), level(0), findMWOE().
+	init l6 :: outEdges([[l6,l5,1],[l6,l4,12]]), level(0), findMWOE().
+
+}
+

@@ -1,0 +1,19 @@
+
+ensem swapper {
+
+	predicate neighbor    :: loc -> fact.
+	predicate swap_token  :: fact.
+	predicate color       :: string -> fact.
+
+	rule swap :: [X]neighbor(Y) \ [X]swap_token(), [X]color(C1), [Y]color(C2) --o [X]color(C2), [Y]color(C1).
+
+}
+
+execute swapper with l0,l1,l2,l3 {
+
+	init l0 :: swap_token(),color("red"), neighbor(l1).
+	init l1 :: swap_token(), color("blue"), neighbor(l0), neighbor(l2), neighbor(l3).
+	init l2 :: swap_token(), color("green"), neighbor(l1).
+	init l3 :: swap_token(), color("purple"), neighbor(l1).
+
+}

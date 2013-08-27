@@ -1,0 +1,27 @@
+
+
+ensem mergesorter {
+
+	extern msr_ensemble.python.lib {
+		take_half :: [a] -> [a],
+		drop_half :: [a] -> [a],
+		merge     :: ([a],[a]) -> [a]
+	}
+
+	predicate unsorted :: [int] -> fact.
+	predicate sorted   :: [int] -> fact.
+	predicate parent   :: loc -> fact.
+	predicate unmerged :: [int] -> fact.
+
+	rule r_split :: [X]unsorted(Xs) | (len(Xs)) >= 2 --o exists Y,Z. [Y]parent(X), [Y]unsorted(take_half(Xs)), [Z]parent(X), [Z]unsorted(drop_half(Xs)).
+	rule r_base  :: [X]unsorted(Xs) | (len(Xs)) < 2 --o [X]sorted(Xs).
+	rule r_ret   :: [Y]sorted(Xs),[Y]parent(X) --o [X]unmerged(Xs).
+	rule r_merge :: [X]unmerged(Xs1), [X]unmerged(Xs2) --o [X]sorted(merge(Xs1,Xs2)).
+
+}
+
+execute mergesorter with l0 {
+
+	init l0 :: unsorted([30,2,100,32]).
+
+}
