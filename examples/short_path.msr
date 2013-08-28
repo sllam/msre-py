@@ -1,0 +1,26 @@
+
+ensem shortpath_ensemble {
+
+	predicate edge :: (loc,int) -> fact.
+	predicate path :: (loc,int) -> fact.
+	predicate trans_req :: (loc,int) -> fact.
+
+	rule base  :: [X]edge(Y,D) \ 1 --o [X]path(Y,D).
+	rule elim  :: [X]path(Y,D1) \ [X]path(Y,D2) | D1 < D2 --o 1.
+	# rule trans :: [X]edge(Y,D1), [Y]path(Z,D2) \ 1 | X != Z --o [X]path(Z,D1+D2).
+	rule trans_1 :: [X]edge(Y,D) \ 1 --o [Y]trans_req(X,D).
+	rule trans_2 :: [Y]trans_req(X,D1), [Y]path(Z,D2) \ 1 | X != Z --o [X]path(Z,D1+D2).
+}
+
+execute shortpath_ensemble with l0,l1,l2,l3,l4,l5,l6,l7 {
+
+	init l0 :: edge(l1,10), edge(l2,13), edge(l3,24).
+	init l1 :: edge(l0,10), edge(l4,2).
+	init l2 :: edge(l0,13), edge(l4,20).
+	init l3 :: edge(l0,24), edge(l4,14).
+	init l4 :: edge(l1,2), edge(l2,20), edge(l3,14), edge(l5,100), edge(l6,1).
+	init l5 :: edge(l4,100), edge(l6,2), edge(l7,20).
+	init l6 :: edge(l5,2), edge(l7,200).
+	init l7 :: edge(l5,20), edge(l6,200).
+
+}
