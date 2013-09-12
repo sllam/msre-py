@@ -26,6 +26,7 @@ Requirements
 System Applications:
    - Python 2.7
    - MPI Distribution, preferably MPI-2
+   - System development libraries for Python and MPI
 
 Non-standard Python packages:
    - mpi4py (MPI binding libraries for Python http://mpi4py.scipy.org/)
@@ -33,17 +34,35 @@ Non-standard Python packages:
 
 * Currently only tested on Ubuntu, but do try on other platforms and feel free to report any bugs or issues to us!
 
+Having problems getting the above? Try the following steps:
+
+-- To obtain MPI system libraries
+sudo apt-get install mpich2
+sudo apt-get install mpi-default-dev
+
+-- To obtain Python developement libraries
+sudo apt-get install python-dev
+
+-- If you don't have python 'easy_install' tools
+sudo apt-get install python_setuptools
+
+-- To obtain non-standard python packages
+sudo easy_install ply
+sudo easy_install mpi4py
 
 ############
 Instructions
 ############
 
-In command prompt, run 'make install', this will install MSRE into your default python installation as the python module 'msr_ensemble'.
+Once you have fulfilled the above system requirements, you can proceed to install msre: In command prompt, run 'make install', 
+this will install MSRE into your default python installation as the python module 'msr_ensemble'.
 
 To compile a MSRE program, invoke the MSRE compiler by running 'msre <.msr file name>', this will create a number of .py files.
 
 To run the MSRE compilation over MPI environment, run 'mpiexec -n <num of ranks> python <.py MSRE compilation>'.
 
+Once execution of all processes have ended, output of each process will be written into 'output.log'. Currently, this is
+the only way program output can be observed.
 
 #####
 TODOs

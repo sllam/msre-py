@@ -195,7 +195,7 @@ def rewrite_loop(rule_classes, init_goals, logger, recv_msg_future_func, send_ms
 		log_info(output_logger,"Location %s:\n%s" % (location.value,pretty_stores(fact_stores,brief=True)) )
 
 
-def try_until(func, times=5, sleep_time=0.2, sleep_factor=2):
+def try_until(func, times=6, sleep_time=0.3, sleep_factor=2):
 	data = None
 	while data == None:
 		data = func()
