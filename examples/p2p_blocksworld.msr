@@ -1,0 +1,41 @@
+
+ensem blockworld_ensem {
+
+	predicate empty :: fact.
+	predicate get   :: fact.
+	predicate put   :: fact.
+	predicate get_f :: (loc) -> fact.
+	predicate put_f :: (loc) -> fact.
+	predicate holds :: (string) -> fact.
+	predicate on    :: (string,string) -> fact.
+	predicate clear :: (string) -> fact.
+
+	rule get_local :: [X]get(), [X]empty(), [X]clear(B1), [X]on(B1,B2) --o [X]holds(B1), [X]clear(B2).
+	rule put_local :: [X]put(), [X]holds(B1), [X]clear(B2) --o [X]empty(), [X]on(B1,B2), [X]clear(B1).
+
+	rule get_friends :: [X]get_f(Y), [X]empty(), [Y]clear(B1), [Y]on(B1,B2) --o [X]holds(B1), [Y]clear(B2).
+	rule put_friends :: [X]put_f(Y), [X]holds(B1), [Y]clear(B2) --o [X]empty(), [Y]on(B1,B2), [Y]clear(B1). 
+
+}
+
+execute blockworld_ensem with l0,l1,l2,l3 {
+
+	B1 = "b1".
+	B2 = "b2".
+	B3 = "b3".
+	B4 = "b4".
+	B5 = "b5".
+	B6 = "b6".
+	B7 = "b7".
+	B8 = "b8".
+	B9 = "b9".
+	B10 = "b10".
+	B11 = "b11".
+	B12 = "b12".
+
+	init l0 :: empty(), on(B1,B2), clear(B1), clear(B3), get(), put(), get_f(l3), put_f(l1).
+	init l1 :: empty(), on(B4,B5), clear(B4), clear(B6), get(), put(), get_f(l0), put_f(l2).
+	init l2 :: empty(), on(B7,B8), clear(B7), clear(B9), get(), put(), get_f(l1), put_f(l3).
+	init l3 :: empty(), on(B10,B11), clear(B10), clear(B12), get(), put(), get_f(l2), put_f(l0).
+
+}
